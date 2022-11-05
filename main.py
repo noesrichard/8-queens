@@ -58,7 +58,7 @@ def main():
     i = 0
     best_score = 0
 
-    while not is_solved(population) or i <= 2000:
+    while not is_solved(population):
         i += 1
         print(f"\n****************** ITERATION: {i} ******************")
 
@@ -95,9 +95,9 @@ def main():
 
     board_to_print =  [['_' for _ in range(8)] for _ in range(8)]
     for ind in population: 
-        if ind.fitness_score == 28:
+        if ind.fitness_score == 28 or ind.fitness_score == best_score:
             for i in range(8):
-                board_to_print[i][ind.queens[i]] = 'Q'
+                board_to_print[ind.queens[i]][i] = 'Q'
 
     for i in range(len(board_to_print)):
         for j in range(len(board_to_print[i])):
