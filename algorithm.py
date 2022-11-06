@@ -5,6 +5,7 @@ class EightQueenGA:
 
     def __init__(self) -> None:
         self.MAX_POPULATION = 8
+        self.MUTATION_RATE = 25
 
         # Generacion de la poblacion inicial
         self.population = self.__generate_population()
@@ -65,6 +66,10 @@ class EightQueenGA:
         for ind in self.population:
             # Calculo de la probabilidad de cada individuo 
             # Su probabilidad sera igual a su puntacion de ajuste sobre el ajuste total
+
+            # Por lo que aquellos que tengan menor numero de ataques o lo que es igual
+            # mayor puntuacion de ajuste tendran mas probabilidad de ser elegidos como
+            # padres
             probability = (ind.fitness_score / total_score) * 100
             for _ in range(round(probability)):
                 bag.append(ind)
@@ -95,19 +100,46 @@ class EightQueenGA:
 
         return child_one, child_two
 
-
-    def __mutation(self, child_one: Board, child_two):
-        # mutacion de los hijos
-        if child_one.fitness_score < child_two.fitness_score:
-            child_one.queens[randrange(0, 8)] = randrange(1, 9)
-        else:
-            child_two.queens[randrange(0, 8)] = randrange(1, 9)
+    def __mutation(self, child_one, child_two):
+        if randrange(0, 100) < self.MUTATION_RATE:
+            if randrange(0,2) == 1:
+                child_one.queens[randrange(0, 8)] = randrange(1, 9)
+            else: 
+                child_two.queens[randrange(0, 8)] = randrange(1, 9)
 
 
     def __next_generation(self,child_one, child_two):
         self.population.sort(key=lambda x: x.fitness_score)
-        del self.population[0]
-        del self.population[1]
+
+        # Acumulacion de ataques
+        total_attacks = 0
+        for ind in self.population: 
+            total_attacks += ind.attacks
+
+        # Almacenamos todos los individuos segun su probabilidad en una "bolsa negra"
+        bag = []
+        for ind in self.population:
+            # Calculo de la probabilidad de cada individuo 
+            # Su probabilidad sera igual a su puntacion de ajuste sobre el ajuste total
+
+            # Aquellos que tengan mayor numero de ataques seran mas probables a 
+            # quedar eliminados
+            probability = (ind.attacks / total_attacks) * 100
+            for _ in range(round(probability)):
+                bag.append(ind)
+
+        # Randomizamos la posicion de los individuos en la bolsa
+        shuffle(bag)
+
+        # Elejimos a los padres de una manera randomica
+        ind_one: Board = bag[randrange(0, len(bag))]
+        ind_two: Board = bag[randrange(0, len(bag))]
+        while ind_one == ind_two:
+            ind_two: Board = bag[randrange(0, len(bag))]
+
+        self.population.remove(ind_one)
+        self.population.remove(ind_two)
+
         self.population.append(child_one)
         self.population.append(child_two)
 

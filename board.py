@@ -3,6 +3,7 @@ class Board:
     def __init__(self, queens: list[int]) -> None:
         self.queens = queens
         self.fitness_score = self.__fitness_score()
+        self.attacks = self.__calculate_attacks()
 
     def __calculate_attacks(self):
         attacks = 0
