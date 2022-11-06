@@ -26,7 +26,9 @@ class Board:
     def diagonal_attack(self, x_a, y_a, x_b, y_b):
         return (abs((y_b - y_a) / (x_b - x_a)) == 1 )
 
+    # funcion de evaluacion, fitness function
     def __fitness_score(self):
+        # cuanto menor numero de ataques es mayor el ajuste
         return 28 - self.__calculate_attacks()
 
     def __str__(self) -> str:
@@ -39,4 +41,5 @@ class Board:
 
     @classmethod
     def generate_board(cls):
+        # genera una lista con las posiciones de las reinas
         return Board([ randrange(1,9) for _ in range(8)])
