@@ -12,6 +12,7 @@ class EightQueenGA:
         self.population.sort(key=lambda x: x.fitness_score, reverse=True)
 
         self.solution = None
+        self.children = []
 
     def solve(self):
         i = 0
@@ -109,39 +110,11 @@ class EightQueenGA:
 
 
     def __next_generation(self,child_one, child_two):
-        self.population.sort(key=lambda x: x.fitness_score)
-
-        # Acumulacion de ataques
-        total_attacks = 0
-        for ind in self.population: 
-            total_attacks += ind.attacks
-
-        # Almacenamos todos los individuos segun su probabilidad en una "bolsa negra"
-        bag = []
-        for ind in self.population:
-            # Calculo de la probabilidad de cada individuo 
-            # Su probabilidad sera igual a su puntacion de ajuste sobre el ajuste total
-
-            # Aquellos que tengan mayor numero de ataques seran mas probables a 
-            # quedar eliminados
-            probability = (ind.attacks / total_attacks) * 100
-            for _ in range(round(probability)):
-                bag.append(ind)
-
-        # Randomizamos la posicion de los individuos en la bolsa
-        shuffle(bag)
-
-        # Elejimos a los padres de una manera randomica
-        ind_one: Board = bag[randrange(0, len(bag))]
-        ind_two: Board = bag[randrange(0, len(bag))]
-        while ind_one == ind_two:
-            ind_two: Board = bag[randrange(0, len(bag))]
-
-        self.population.remove(ind_one)
-        self.population.remove(ind_two)
-
-        self.population.append(child_one)
-        self.population.append(child_two)
+        self.children.append(child_one)
+        self.children.append(child_two)
+        if len(self.children) == len(self.population):
+            self.population = [ind for ind in self.children]
+            self.children = []
 
 
     def __is_solved(self):
