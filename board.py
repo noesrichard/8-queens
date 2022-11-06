@@ -39,4 +39,4 @@ class Board:
 
     @classmethod
     def generate_board(cls):
-        return Board([ randrange(0,8) for _ in range(8)])
+        return Board([ randrange(1,9) for _ in range(8)])
