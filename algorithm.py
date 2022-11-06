@@ -5,6 +5,7 @@ class EightQueenGA:
 
     def __init__(self) -> None:
         self.MAX_POPULATION = 8
+        self.MUTATION_RATE = 25
 
         # Generacion de la poblacion inicial
         self.population = self.__generate_population()
@@ -97,11 +98,11 @@ class EightQueenGA:
 
 
     def __mutation(self, child_one: Board, child_two):
-        # mutacion de los hijos
-        if child_one.fitness_score < child_two.fitness_score:
-            child_one.queens[randrange(0, 8)] = randrange(1, 9)
-        else:
-            child_two.queens[randrange(0, 8)] = randrange(1, 9)
+         if randrange(0, 100) < self.MUTATION_RATE:
+            if randrange(0,2) == 1:
+                child_one.queens[randrange(0, 8)] = randrange(1, 9)
+            else: 
+                child_two.queens[randrange(0, 8)] = randrange(1, 9)
 
 
     def __next_generation(self,child_one, child_two):
